@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import 'config/presenter/pages/config_page.dart';
-import 'history/presenter/pages/history_page.dart';
-import 'home/presenter/pages/home_page.dart';
-import 'scan/presenter/pages/scan_page.dart';
+import 'features/camera/presenter/pages/camera_page.dart';
+import 'features/history/presenter/pages/history_page.dart';
+import 'features/home/presenter/pages/home_page.dart';
+import 'features/scan/presenter/pages/scan_page.dart';
 
 class AppWidget extends StatelessWidget {
   const AppWidget({super.key});
@@ -23,7 +24,7 @@ class AppWidget extends StatelessWidget {
         GetPage(name: "/history", page: () => const HistoryPage()),
         GetPage(name: "/config", page: () => const ConfigPage()),
         GetPage(name: "/scan", page: () => const ScanPage()),
-        GetPage(name: "/scan/camera", page: () => const ScanPage()),
+        GetPage(name: "/scan/camera", page: () => const CameraPage()),
         GetPage(name: "/scan/gallery", page: () => const ScanPage()),
       ],
     );

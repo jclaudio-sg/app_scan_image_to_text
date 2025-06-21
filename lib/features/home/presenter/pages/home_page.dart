@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
+import 'package:get/get.dart';
 import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:permission_handler/permission_handler.dart';
+
+import '../../../camera/presenter/pages/camera_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -22,11 +26,52 @@ class _HomePageState extends State<HomePage> {
         centerTitle: true,
         title: const Text("Image To Text"),
       ),
-      body: ListView.builder(
-        itemCount: 10,
-        itemBuilder: (context, index) => ListTile(
-          title: Text('Item $index'),
-        ),
+      body: ListView(
+        children: [
+          Container(),
+          ElevatedButton(
+              onPressed: () async {
+                var cameraStatus = await Permission.camera.status;
+                debugPrint("Pedindo permissão a camera: $cameraStatus");
+                if (!cameraStatus.isGranted) {
+                  final cameraStatusRes = await Permission.camera.request();
+                  if (cameraStatusRes.isPermanentlyDenied) {
+                    debugPrint("Permissão permanentemente negado.");
+                  }
+                } else {
+                  debugPrint("Usuario liberou a permissão");
+                  Get.to(const CameraPage());
+                }
+              },
+              child: const Text(
+                "Camera",
+                style: TextStyle(
+                  fontSize: 22,
+                ),
+              )),
+          const SizedBox(
+            height: 22,
+          ),
+          ElevatedButton(
+              onPressed: () async {
+                debugPrint("Pegando imagem");
+                XFile? image =
+                    await picker.pickImage(source: ImageSource.gallery);
+                if (image != null) {
+                  String data = await getImageToText(image.path);
+                  setState(() {
+                    result = data;
+                    debugPrint("Texto: $result");
+                  });
+                }
+              },
+              child: const Text(
+                "Galeria",
+                style: TextStyle(
+                  fontSize: 22,
+                ),
+              )),
+        ],
       ),
       // floatingActionButtonLocation: ExpandableFab.location,
       // floatingActionButton: ExpandableFab(
@@ -120,7 +165,7 @@ class _HomePageState extends State<HomePage> {
                     debugPrint("Texto: $result");
                   });
                 },
-                child: Icon(Icons.browse_gallery),
+                child: const Icon(Icons.browse_gallery),
               )
             ],
           ),
